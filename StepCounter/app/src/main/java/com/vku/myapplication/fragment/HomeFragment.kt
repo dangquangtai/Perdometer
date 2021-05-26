@@ -52,7 +52,7 @@ class HomeFragment : Fragment(), SensorEventListener {
     var myPersonalInfo: PersonalInfo? = null
     private var lastTimeSensor = 0L
     var newStepValue = 0f
-
+    var isResume =false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -64,11 +64,10 @@ class HomeFragment : Fragment(), SensorEventListener {
         viewModel = ViewModelProvider(this, viewModelFactory).get(HomeViewModel::class.java)
         binding.lifecycleOwner = this
         sensorManager = activity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
-        binding.clearBtn.setOnClickListener {
-            viewModel.onClear()
-        }
+//        binding.clearBtn.setOnClickListener {
+//            viewModel.onClear()
+//        }
         database1 = PersonalDatabase.getInstance(application).personalDatabaseDAO
-
         val personalInfo = database1.getListPersonalInfo()
         personalInfo.observe(viewLifecycleOwner, Observer {
             it?.let {
@@ -100,7 +99,7 @@ class HomeFragment : Fragment(), SensorEventListener {
                 if (it.isNotEmpty()) {
 
                     pauseOffset = it[0].countTime
-                    Log.i("cxs",getSetbase.toString())
+                    Log.i("cxs", getSetbase.toString())
                     if (getSetbase == false) {
                         binding.chronometer.setBase(SystemClock.elapsedRealtime() - pauseOffset)
                         getSetbase = true
@@ -117,6 +116,7 @@ class HomeFragment : Fragment(), SensorEventListener {
                     newPedometer.distance = 0.0
                     newPedometer.speed = 0f
                     viewModel.onInsertToday(newPedometer)
+
                 }
             }
         })
@@ -126,35 +126,39 @@ class HomeFragment : Fragment(), SensorEventListener {
             while (true) {
                 val x = System.currentTimeMillis() - lastTimeSensor
                 Log.i("tag", x.toString())
-                if (x > 2000L) {
+                if (x > 1000L) {
                     pauseChronometer()
                     Log.i("tag", "Update data")
-                    val oldPedometer = viewModel.todayPedometer
-                    if (oldPedometer != null) {
-                        oldPedometer.countTime = pauseOffset
-                        if(pauseOffset == 0L){
-                            oldPedometer.speed = 0f
+                    val oldPedometer1 = viewModel.todayPedometer
+                    if (oldPedometer1 != null) {
+                        oldPedometer1.countTime = pauseOffset
+                        if (pauseOffset == 0L) {
+                            oldPedometer1.speed = 0f
+                        } else {
+                            oldPedometer1.speed =
+                                ((oldPedometer1.distance) / ((pauseOffset) / (1000f))).toFloat()
+                        }
+                        if(oldPedometer1.speed ==0f){
+                            oldPedometer1.caloriesBurned =0f
                         }else{
-                            oldPedometer.speed =
-                                ((oldPedometer.distance) / ((pauseOffset) / (1000f))).toFloat()
+                            oldPedometer1.caloriesBurned = calculateEnergyExpenditure(
+                                height,
+                                age,
+                                weight,
+                                gender,
+                                pauseOffset,
+                                oldPedometer1.distance.toFloat()
+                            )
                         }
 
-                        oldPedometer.caloriesBurned = calculateEnergyExpenditure(
-                            height,
-                            age,
-                            weight,
-                            gender,
-                            pauseOffset,
-                            oldPedometer.distance.toFloat()
-                        )
-                        viewModel.onUpdate(oldPedometer)
-                        updateUI(oldPedometer)
+                            viewModel.onUpdate(oldPedometer1)
+                        updateUI(oldPedometer1)
                     }
-
                 }
                 delay(1000)
             }
         }
+
         return binding.root
     }
 
@@ -181,6 +185,7 @@ class HomeFragment : Fragment(), SensorEventListener {
     override fun onResume() {
         super.onResume()
         running = true
+        isResume =true
         var stepsSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
         if (stepsSensor == null) {
             Toast.makeText(requireContext(), "No Step Counter Sensor !", Toast.LENGTH_SHORT)
@@ -200,17 +205,17 @@ class HomeFragment : Fragment(), SensorEventListener {
         super.onPause()
         getSetbase = false
         Log.i("cxs", getSetbase.toString())
-        sensorManager?.unregisterListener(this)
+//        sensorManager?.unregisterListener(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-//        running = false
-//        sensorManager?.unregisterListener(this)
+        running = false
+        sensorManager?.unregisterListener(this)
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if (running) {
+
             lastTimeSensor = System.currentTimeMillis()
 
             if (event != null) {
@@ -228,10 +233,6 @@ class HomeFragment : Fragment(), SensorEventListener {
                     editor.putFloat(Initial_Count_Key, event.values[0])
                     editor.commit()
 
-//                    Timer("SettingUp", false).schedule(1500) {
-//                        pauseChronometer()
-//
-//                    }
                 }
 
             }
@@ -239,17 +240,19 @@ class HomeFragment : Fragment(), SensorEventListener {
                 Log.i("tag", "Update data")
                 val oldPedometer = viewModel.todayPedometer
                 if (oldPedometer != null) {
-                    startChronometer()
-                    val elapsedMillis: Long =
-                        SystemClock.elapsedRealtime() - binding.chronometer.base
+                  if (!isResume){
+                      startChronometer()
+                  }
+                    isResume = false
                     oldPedometer.numberSteps += newStepValue
                     oldPedometer.distance += newStepValue * (stepLenghth / 100f)
+
                     viewModel.onUpdate(oldPedometer)
                     updateUI(oldPedometer)
                 }
             }
 
-        }
+
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
@@ -271,7 +274,7 @@ class HomeFragment : Fragment(), SensorEventListener {
                     .toString() + " Kcal"
 
 
-//            binding.chronometer.base = SystemClock.elapsedRealtime() - pauseOffset
+
             Log.i("tag1", "test")
         } catch (e: Exception) {
             Log.e("tag", e.message.toString())

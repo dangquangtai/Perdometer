@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RadioButton
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -14,6 +15,8 @@ import com.vku.myapplication.R
 import com.vku.myapplication.database.*
 import com.vku.myapplication.databinding.FragmentDataBinding
 import com.vku.myapplication.databinding.FragmentUserInfoBinding
+import kotlinx.android.synthetic.main.fragment_user_info.*
+import kotlinx.android.synthetic.main.fragment_user_info.view.*
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -22,6 +25,7 @@ class UserInfoFragment : Fragment() {
     lateinit var binding: FragmentUserInfoBinding
     lateinit var database: PersonalDatabaseDAO
     var myPersonalInfo: PersonalInfo? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,7 +41,11 @@ class UserInfoFragment : Fragment() {
                     val thisPersonalInfo = it[0]
                     myPersonalInfo = it[0]
                     binding.inputAge.setText("" + thisPersonalInfo.age)
-                    binding.sexGroup.setText("" + thisPersonalInfo.sex)
+                   if (thisPersonalInfo.sex == "male"){
+                     binding.radioGroup.maleChecked.isChecked =true
+                   }else{
+                       binding.radioGroup.femaleChecked.isChecked =true
+                   }
                     binding.inputWeight.setText("" + thisPersonalInfo.weight)
                     binding.inputStepLength.setText("" + thisPersonalInfo.stepLength)
                     binding.inputHeight.setText("" + thisPersonalInfo.height)
@@ -53,7 +61,12 @@ class UserInfoFragment : Fragment() {
 
         binding.btnConfirm.setOnClickListener {
             if (myPersonalInfo != null) {
-                myPersonalInfo!!.sex = binding.sexGroup.text.toString()
+         if (radioGroup.maleChecked.isChecked ==true){
+             myPersonalInfo!!.sex ="male"
+         }  else {
+             myPersonalInfo!!.sex ="female"
+         }
+                Toast.makeText(context, myPersonalInfo!!.sex.toString(), Toast.LENGTH_SHORT).show()
                 myPersonalInfo!!.weight = binding.inputWeight.text.toString()
                 myPersonalInfo!!.stepLength = binding.inputStepLength.text.toString()
                 myPersonalInfo!!.age = binding.inputAge.text.toString()
@@ -61,9 +74,12 @@ class UserInfoFragment : Fragment() {
                 viewLifecycleOwner.lifecycleScope.launch {
                     database.update(myPersonalInfo!!)
                 }
+                Toast.makeText(context, "Update Succeed !", Toast.LENGTH_SHORT).show()
             }
         }
 
+
         return binding.root
     }
+
 }
