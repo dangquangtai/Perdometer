@@ -10,12 +10,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+
 import com.vku.myapplication.R
-import com.vku.myapplication.fragment.DataFragment
-import com.vku.myapplication.fragment.DirectionFragment
-import com.vku.myapplication.fragment.HomeFragment
-import com.vku.myapplication.fragment.UserInfoFragment
+import com.vku.myapplication.fragment.*
+
 
 class MainActivity : AppCompatActivity() {
     private val homeFragment = HomeFragment()
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private val infoFragment = UserInfoFragment()
     private var activeFragment: Fragment = homeFragment
     private var directionFragment = DirectionFragment()
+    private var newsFragment = NewsFragment()
     private var locationPermissionGranted = false
     val appPermission = listOf(
         Manifest.permission.ACTIVITY_RECOGNITION,
@@ -37,8 +39,9 @@ class MainActivity : AppCompatActivity() {
         fragmentManager.beginTransaction().apply {
             add(R.id.fragment_container, homeFragment, "home")
             add(R.id.fragment_container, dataFragment, "data").hide(dataFragment)
-            add(R.id.fragment_container, infoFragment, "data").hide(infoFragment)
+            add(R.id.fragment_container, infoFragment, "info").hide(infoFragment)
             add(R.id.fragment_container, directionFragment, "direction").hide(directionFragment)
+            add(R.id.fragment_container, newsFragment, "news").hide(newsFragment)
         }.commit()
         bottomNavigationView = findViewById(R.id.bottom_nav)
         bottomNavigationView.selectedItemId = R.id.nav_home
@@ -68,6 +71,12 @@ class MainActivity : AppCompatActivity() {
                             fragmentManager.beginTransaction().hide(activeFragment)
                                 .show(infoFragment).commit()
                             activeFragment = infoFragment
+                            return true
+                        }
+                        R.id.nav_news -> {
+                            fragmentManager.beginTransaction().hide(newsFragment)
+                                .show(newsFragment).commit()
+                            activeFragment = newsFragment
                             return true
                         }
                     }
@@ -135,4 +144,9 @@ class MainActivity : AppCompatActivity() {
             return
         }
     }
+
+    override fun onBackPressed() {
+        if (wb_webView.canGoBack()) wb_webView.goBack() else super.onBackPressed()
+    }
+
 }
