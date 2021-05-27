@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Theme.StepCounter" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/teal_200</item>
-        <item name="colorPrimaryVariant">@color/teal_200</item>
+        <item name="colorPrimary">#4FC3F7</item>
+        <item name="colorPrimaryVariant">#81D4FA</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>

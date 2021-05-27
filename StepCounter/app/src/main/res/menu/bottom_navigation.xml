@@ -5,13 +5,13 @@
         android:icon="@drawable/ic_baseline_map_24"
         android:title="Challenge" />
     <item
-        android:id="@+id/nav_home"
-        android:icon="@drawable/ic_baseline_home_24"
-        android:title="Home" />
-    <item
         android:id="@+id/nav_data"
         android:icon="@drawable/ic_baseline_data_exploration_24"
         android:title="Data" />
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_baseline_home_24"
+        android:title="Home" />
     <item
         android:id="@+id/nav_info"
         android:icon="@drawable/ic_baseline_supervised_user_circle_24"

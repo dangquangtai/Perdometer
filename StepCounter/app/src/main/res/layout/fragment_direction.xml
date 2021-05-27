@@ -179,7 +179,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="20dp"
-                android:backgroundTint="#B3E5FC"
+                app:backgroundTint="#80DEEA"
                 android:text="Find" />
         </LinearLayout>
 
@@ -211,7 +211,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:backgroundTint="#B3E5FC"
+                app:backgroundTint="#80DEEA"
                 android:gravity="center"
                 android:text="start" />
 
@@ -231,7 +231,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:drawableLeft="@drawable/timer"
-                android:drawablePadding="10dp"
+                android:drawablePadding="5dp"
                 android:gravity="center"
                 android:textColor="#0E111C"
                 android:textSize="20dp" />
