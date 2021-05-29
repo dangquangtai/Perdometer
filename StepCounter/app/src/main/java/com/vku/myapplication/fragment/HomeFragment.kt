@@ -1,12 +1,15 @@
 package com.vku.myapplication.fragment
 
+import android.app.Service
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.os.IBinder
 import android.os.SystemClock
 import android.util.Log
 import android.view.LayoutInflater
@@ -31,7 +34,7 @@ import kotlin.concurrent.schedule
 import kotlin.math.log
 
 
-class HomeFragment : Fragment(), SensorEventListener {
+class HomeFragment :Fragment(),  SensorEventListener {
     lateinit var binding: FragmentHomeBinding
     lateinit var database: PedometerDatabaseDAO
     private var sensorManager: SensorManager? = null

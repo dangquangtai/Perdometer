@@ -1,9 +1,14 @@
 package com.vku.myapplication.activity
 
 import android.Manifest
+import android.app.Service
 import android.content.pm.PackageManager
+import android.content.pm.ServiceInfo
+import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +21,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 import com.vku.myapplication.R
 import com.vku.myapplication.fragment.*
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_data.*
+import kotlinx.android.synthetic.main.fragment_direction.*
+import nl.dionsegijn.konfetti.KonfettiView
+import nl.dionsegijn.konfetti.models.Shape
+import nl.dionsegijn.konfetti.models.Size
+import java.security.Provider
+import kotlin.reflect.KParameter
 
 
 class MainActivity : AppCompatActivity() {
@@ -27,6 +40,9 @@ class MainActivity : AppCompatActivity() {
     private var directionFragment = DirectionFragment()
     private var newsFragment = NewsFragment()
     private var locationPermissionGranted = false
+
+    //    lateinit var btnStart:Button
+    lateinit var konfettiView: KonfettiView
     val appPermission = listOf(
         Manifest.permission.ACTIVITY_RECOGNITION,
         Manifest.permission.ACCESS_FINE_LOCATION
@@ -45,6 +61,7 @@ class MainActivity : AppCompatActivity() {
         }.commit()
         bottomNavigationView = findViewById(R.id.bottom_nav)
         bottomNavigationView.selectedItemId = R.id.nav_home
+
         bottomNavigationView.setOnNavigationItemSelectedListener(
             object : BottomNavigationView.OnNavigationItemSelectedListener {
                 override fun onNavigationItemSelected(@NonNull item: MenuItem): Boolean {
@@ -65,6 +82,8 @@ class MainActivity : AppCompatActivity() {
                             fragmentManager.beginTransaction().hide(activeFragment)
                                 .show(directionFragment).commit()
                             activeFragment = directionFragment
+
+
                             return true
                         }
                         R.id.nav_info -> {
@@ -82,7 +101,10 @@ class MainActivity : AppCompatActivity() {
                     }
                     return false
                 }
+
+
             })
+
         checkAndRequestPermissions()
     }
 
@@ -148,5 +170,24 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if (wb_webView.canGoBack()) wb_webView.goBack() else super.onBackPressed()
     }
+
+//    fun firework() {
+//        setContentView(R.layout.fragment_direction)
+
+//        btnStart =findViewById(R.id.btnStart)
+//        btnStart.setOnClickListener(View.OnClickListener {
+//            konfettiView.build()
+//                .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
+//                .setDirection(0.0, 359.0)
+//                .setSpeed(1f, 5f)
+//                .setFadeOutEnabled(true)
+//                .setTimeToLive(2000L)
+//                .addShapes(Shape.Square, Shape.Circle)
+//                .addSizes(Size(12))
+//                .setPosition(-50f, konfettiView.width + 50f, -50f, -50f)
+//                .streamFor(300, 5000L)
+//        })
+//    }
+
 
 }

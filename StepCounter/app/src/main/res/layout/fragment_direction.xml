@@ -6,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,7 +21,7 @@
             <LinearLayout
                 android:id="@+id/showLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:gravity="center|bottom"
                 android:background="@drawable/bac"
                 android:orientation="vertical">
@@ -146,7 +147,12 @@
 
             </LinearLayout>
 
+            <nl.dionsegijn.konfetti.KonfettiView
+                android:id="@+id/viewKonfetti"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
 
+                />
 
 
         </androidx.cardview.widget.CardView>
@@ -203,6 +209,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="5">
+
             <Button
                 android:id="@+id/btnStart"
                 android:layout_width="wrap_content"
@@ -211,9 +218,9 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                app:backgroundTint="#80DEEA"
                 android:gravity="center"
-                android:text="start" />
+                android:text="start"
+                app:backgroundTint="#80DEEA" />
 
             <TextView
                 android:id="@+id/textDistance"

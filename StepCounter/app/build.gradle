@@ -76,5 +76,9 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.6.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
     implementation 'com.google.maps.android:android-maps-utils:0.5'
+//    Firework effect
+    implementation 'nl.dionsegijn:konfetti:1.3.2'
+
+
 
 }

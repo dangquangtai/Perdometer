@@ -1,7 +1,6 @@
 package com.vku.myapplication.fragment
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -9,7 +8,6 @@ import android.graphics.Color
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
@@ -24,7 +22,6 @@ import androidx.core.view.isInvisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -41,8 +38,13 @@ import com.vku.myapplication.database.PersonalDatabase
 import com.vku.myapplication.database.PersonalDatabaseDAO
 import com.vku.myapplication.database.PersonalInfo
 import com.vku.myapplication.map.DirectionResponses
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_direction.*
 import kotlinx.coroutines.launch
+import nl.dionsegijn.konfetti.KonfettiView
+import nl.dionsegijn.konfetti.ParticleSystem
+import nl.dionsegijn.konfetti.models.Shape
+import nl.dionsegijn.konfetti.models.Size
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -55,6 +57,7 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlin.reflect.KParameter
 
 
 class DirectionFragment : Fragment() {
@@ -85,7 +88,7 @@ class DirectionFragment : Fragment() {
     var height: Int = 0
     var weight: Int = 0
     lateinit var linearLayout: LinearLayout
-
+    lateinit var konfettiView: KonfettiView
 
 
     @SuppressLint("MissingPermission")
@@ -154,20 +157,31 @@ class DirectionFragment : Fragment() {
         }
         btn_start.setOnClickListener {
             if (lastKnownLocation != null) {
-                var calculateCalo:Float =0f
+                var calculateCalo: Float = 0f
                 if (!isStart) {
+
                     googleMap.clear()
                     listLocation.clear()
                     btn_start.text = "Stop"
-                    displayDistance.text ="0,0"
-                    displayTime.text ="00:00"
-                    displaySpeed.text ="0,0"
-                    displayCalo.text ="0,00"
+                    displayDistance.text = "0,0"
+                    displayTime.text = "00:00"
+                    displaySpeed.text = "0,0"
+                    displayCalo.text = "0,00"
                     btnShare.isInvisible = true
                     sumDistance = 0.0
                     startChronometer()
                     isStart = true
                 } else {
+                    konfettiView.build()
+                        .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
+                        .setDirection(0.0, 359.0)
+                        .setSpeed(1f, 5f)
+                        .setFadeOutEnabled(true)
+                        .setTimeToLive(2000L)
+                        .addShapes(Shape.Square, Shape.Circle)
+                        .addSizes(Size(12))
+                        .setPosition(-50f, konfettiView.width + 50f, -50f, -50f)
+                        .streamFor(300, 5000L)
                     btn_start.text = "Start"
                     btnShare.visibility = view!!.visibility
                     pauseChronometer()
@@ -186,18 +200,19 @@ class DirectionFragment : Fragment() {
                             RoundingMode.HALF_EVEN
                         ).toString()
                     }
-               if (sumDistance ==0.0){
-                    calculateCalo =0f
-               }else{
-                    calculateCalo = calculateEnergyExpenditure(
-                       height,
-                       age,
-                       weight,
-                       gender,
-                       pauseOffset,
-                       sumDistance.toFloat()
-                   )
-               }
+                    if (sumDistance == 0.0) {
+                        calculateCalo = 0f
+                    } else {
+
+                        calculateCalo = calculateEnergyExpenditure(
+                            height,
+                            age,
+                            weight,
+                            gender,
+                            pauseOffset,
+                            sumDistance.toFloat()
+                        )
+                    }
                     displayCalo.text = BigDecimal(calculateCalo.toDouble()).setScale(
                         2,
                         RoundingMode.HALF_EVEN
@@ -213,8 +228,12 @@ class DirectionFragment : Fragment() {
         btnShare.setOnClickListener {
             try {
 
-                 val bitmap =   Bitmap.createBitmap(linearLayout.width, linearLayout.height, Bitmap.Config.ARGB_8888)
-             val canvas = Canvas(bitmap)
+                val bitmap = Bitmap.createBitmap(
+                    linearLayout.width,
+                    linearLayout.height,
+                    Bitmap.Config.ARGB_8888
+                )
+                val canvas = Canvas(bitmap)
                 linearLayout.draw(canvas)
 
 //                val bitmap: Bitmap = getBimapFromView(linearLayout)
@@ -228,7 +247,7 @@ class DirectionFragment : Fragment() {
                 val intent = Intent(Intent.ACTION_SEND)
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 val photoURI = FileProvider.getUriForFile(
-                   context!!.applicationContext,
+                    context!!.applicationContext,
                     BuildConfig.APPLICATION_ID.toString() + ".provider",
                     file
                 )
@@ -267,6 +286,8 @@ class DirectionFragment : Fragment() {
         displayCalo = root.findViewById(R.id.caloMap)
         btnShare = root.findViewById(R.id.btnShare)
         linearLayout = root.findViewById(R.id.showLayout)
+        konfettiView = root.findViewById(R.id.viewKonfetti)
+
         database1 = PersonalDatabase.getInstance(application).personalDatabaseDAO
         val personalInfo = database1.getListPersonalInfo()
         personalInfo.observe(viewLifecycleOwner, Observer {
@@ -550,7 +571,9 @@ class DirectionFragment : Fragment() {
         return returnBitmap
     }
 
+
 }
+
 
 //private operator fun Any.plus(s: String): String {
 //
