@@ -231,7 +231,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="Distance: 0m"
-                android:textSize="20dp" />
+                android:textSize="15dp" />
 
             <Chronometer
                 android:id="@+id/chronometerMap"
@@ -241,7 +241,7 @@
                 android:drawablePadding="5dp"
                 android:gravity="center"
                 android:textColor="#0E111C"
-                android:textSize="20dp" />
+                android:textSize="15dp" />
 
 
         </LinearLayout>

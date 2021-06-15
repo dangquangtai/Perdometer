@@ -131,8 +131,9 @@ class DirectionFragment : Fragment() {
                     val end = address.latitude.toString() + "," + address.longitude.toString()
                     apiServices.getDirection(
                         from,
-                        location,
-                        "AIzaSyDcvQwgiyBLQc4Dvad4cJZZimf7C4z6r1o"
+                        end,
+                        "bike",
+                        "A3Sh66gqzl8692hfcneIAXC6bS4YY7YxEr90bo7x"
                     )
                         .enqueue(object : Callback<DirectionResponses> {
                             override fun onResponse(
@@ -140,6 +141,17 @@ class DirectionFragment : Fragment() {
                                 response: Response<DirectionResponses>
                             ) {
                                 drawPolyline(response, googleMap)
+                                val marker = MarkerOptions().position(
+                                    LatLng(
+                                        address.latitude,
+                                        address.longitude
+                                    )
+                                ).icon(
+                                    BitmapDescriptorFactory.defaultMarker(
+                                        BitmapDescriptorFactory.HUE_AZURE
+                                    )
+                                )
+                                map.addMarker(marker)
 
                             }
 
@@ -150,6 +162,9 @@ class DirectionFragment : Fragment() {
 
                             }
                         })
+                }
+                else{
+                    Toast.makeText(context,"Không tìm thấy địa điểm",Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -343,39 +358,24 @@ class DirectionFragment : Fragment() {
 
     private fun drawPolyline(response: Response<DirectionResponses>, map: GoogleMap) {
         if (response.body().routes?.size!! > 0) {
-            val leg = response.body().routes?.get(0)?.legs?.get(0)
-            val routeList = response.body()?.routes
-            if (routeList != null) {
-                for (route in routeList) {
-                    val shape = route?.overviewPolyline?.points
-                    val polyline = PolylineOptions()
-                        .addAll(PolyUtil.decode(shape))
-                        .width(9f)
-                        .color(Color.BLUE)
-                    val line = map.addPolyline(polyline)
-                }
-            }
-
-            val marker = MarkerOptions().position(
-                LatLng(
-                    leg?.endLocation?.lat!!, leg?.endLocation?.lng!!
-                )
-            ).title(leg.endAddress)
-                .icon(
-                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
-                )
-            val newMarker = map.addMarker(marker)
-            newMarker.showInfoWindow()
+            val route = response.body().routes?.get(0)
+            val shape = route?.overviewPolyline?.points
+            val polyline = PolylineOptions()
+                .addAll(PolyUtil.decode(shape))
+                .width(9f)
+                .color(Color.BLUE)
+            map.addPolyline(polyline)
         }
 
     }
 
     private interface ApiServices {
-        @GET("maps/api/directions/json")
+        @GET(("Direction"))
         fun getDirection(
             @Query("origin") origin: String,
             @Query("destination") destination: String,
-            @Query("key") apiKey: String
+            @Query("vehicle") vehicle:String,
+            @Query("api_key") apiKey: String
         ): Call<DirectionResponses>
     }
 
@@ -383,7 +383,7 @@ class DirectionFragment : Fragment() {
         fun apiServices(): DirectionFragment.ApiServices {
             val retrofit = Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("https://maps.googleapis.com")
+                .baseUrl("https://rsapi.goong.io/")
                 .build()
             return retrofit.create<DirectionFragment.ApiServices>(DirectionFragment.ApiServices::class.java)
         }
@@ -437,8 +437,8 @@ class DirectionFragment : Fragment() {
 
     private fun setUpLocationRequest() {
         locationRequest = LocationRequest.create()
-        locationRequest.interval = 10000
-        locationRequest.fastestInterval = 3000
+        locationRequest.interval = 5000
+        locationRequest.fastestInterval = 2000
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
     }
 

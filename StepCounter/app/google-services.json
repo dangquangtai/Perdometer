@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1095504508516",
+    "project_id": "pedometer-4b3da",
+    "storage_bucket": "pedometer-4b3da.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1095504508516:android:4bbd2399991283fd4c5171",
+        "android_client_info": {
+          "package_name": "com.vku.myapplication.fragment"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1095504508516-bajc7pn7b9g7ed76lq5u9492tqg9mvlh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfBWYFW_xLNo9e0k5VZpO4wIBQooLdthg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1095504508516-bajc7pn7b9g7ed76lq5u9492tqg9mvlh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

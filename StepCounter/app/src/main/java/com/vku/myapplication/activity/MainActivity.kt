@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity() {
                             return true
                         }
                         R.id.nav_news -> {
-                            fragmentManager.beginTransaction().hide(newsFragment)
+                            fragmentManager.beginTransaction().hide(activeFragment)
                                 .show(newsFragment).commit()
                             activeFragment = newsFragment
                             return true

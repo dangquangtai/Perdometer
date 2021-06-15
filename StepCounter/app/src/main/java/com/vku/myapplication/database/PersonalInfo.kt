@@ -11,11 +11,11 @@ data class PersonalInfo(
     @ColumnInfo(name = "sex")
     var sex: String = "male",
     @ColumnInfo(name = "age")
-    var age: String = "25",
+    var age: Int = 25,
     @ColumnInfo(name = "weight")
-    var weight: String = "70",
+    var weight: Int = 70,
     @ColumnInfo(name = "height")
-    var height: String = "170",
+    var height: Int = 170,
     @ColumnInfo(name = "stepLength")
-    var stepLength: String = "70"
+    var stepLength: Int = 70
 )

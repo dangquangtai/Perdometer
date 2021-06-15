@@ -43,7 +43,6 @@ class HomeFragment :Fragment(),  SensorEventListener {
     private val Initial_Count_Key = "FootStepInitialCount"
     private var sessionSteps = 0f
     var runing = false
-    var isChanging = false
     var pauseOffset: Long = 0
     var stepLenghth: Int = 0
     var gender: Int = 1
@@ -56,6 +55,7 @@ class HomeFragment :Fragment(),  SensorEventListener {
     private var lastTimeSensor = 0L
     var newStepValue = 0f
     var isResume =false
+    private lateinit var database: DatabaseReference
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
